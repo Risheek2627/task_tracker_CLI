@@ -29,7 +29,18 @@ Task Tracker CLI is a simple command-line interface application designed to help
 
 ## Project Structure
 
-Task Tracker CLI ├── cli.js # Main CLI application ├── taskController.js # Controller for task operations ├── database.js # Database connection configuration ├── package.json # Project metadata and dependencies ├── package-lock.json # Dependency lock file
+Task-tracker-cli/
+│
+├── config/
+│   └── database.js               # Database configuration
+│
+├── controllers/
+│   └── taskController.js         # Task-related logic
+│
+├── cli.js                        # Main CLI entry file
+├── package.json                  # Node.js package file
+├── README.md                     # Project explanation and usage
+└── .gitignore                    # Git ignore file
 ---
 
 
