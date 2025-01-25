@@ -87,7 +87,7 @@ const listTasks = async (status = null) => {
     } else {
       result.forEach((task) => {
         console.log(
-          `ID : ${task.id}, description : ${task.description} , status : ${task.description}`
+          `ID : ${task.id}, description : ${task.description} , status : ${task.status}`
         );
       });
     }
