@@ -32,7 +32,9 @@ Task Tracker CLI is a simple command-line interface application designed to help
 
 ## Project Structure
 
+Task Tracker CLI ├── cli.js # Main CLI application ├── taskController.js # Controller for task operations ├── database.js # Database connection configuration ├── package.json # Project metadata and dependencies ├── package-lock.json # Dependency lock file
 ---
+
 
 ## Technologies Used
 
@@ -51,3 +53,26 @@ Task Tracker CLI is a simple command-line interface application designed to help
    git clone <repository-url>
    cd task_tracker
 
+2. **Install Dependencies**:
+   ```bash
+   npm install
+
+3. **Setup Database**:
+  - Create a MySQL database named task_tracker.
+  - Add the necessary credentials in the database.js file.
+       Example database.js
+    ```bash
+    const mysql = require("mysql2");
+
+    const pool = mysql.createPool({
+    host: "localhost",
+    user: "root",
+    password: "<your_password>",
+    database: "task_tracker",
+    });
+
+    module.exports = pool.promise();
+    
+4.**Run the Application** : 
+    ```bash
+   node cli.js
