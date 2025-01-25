@@ -11,6 +11,7 @@ const {
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
+  prompt: "TaskTrackerCLI>>>",
 });
 
 const handleCommand = (command, args) => {
@@ -30,8 +31,8 @@ const handleCommand = (command, args) => {
       updateTask(args[0], args.slice(1).join(" "));
       break;
     case "delete":
-      if (args.length < 2) {
-        console.log("Please provide ID and description");
+      if (args.length === 0) {
+        console.log("Please provide ID to delete the task");
         return;
       }
       deleteTask(args[0]);
@@ -61,7 +62,18 @@ const handleCommand = (command, args) => {
   }
 };
 
-const [, , command, ...args] = process.argv;
-handleCommand(command, args);
+//function to create n interactive CLI session
+const startInteractiveSession = () => {
+  rl.prompt();
+
+  rl.on("line", (input) => {
+    const [, , command, ...args] = input.split(" ");
+    handleCommand(command, args);
+    rl.prompt();
+  }).on("close", () => {
+    console.log("Exiting Task Tracker CLI......");
+    process.exit(0);
+  });
+};
 
 rl.close();
