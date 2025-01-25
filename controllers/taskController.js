@@ -1,13 +1,12 @@
 const db = require("../config/database");
 
 //add new task
-const addTask = (description) => {
-  const query = "INSERT INTO tasks (description) VALUES(?)";
-  db.execute(query, [description], (err, results) => {
-    if (err) {
-      console.log("ERROR ADDING TASK", err.message);
-      return;
-    }
-    console.log(`Task added successfuly (ID : ${results.insertId})`);
-  });
+const addTask = async (description) => {
+  try {
+    const query = "INSERT INTO tasks (description) VALUES(?)";
+    const [result] = await db.query(query, [description]);
+    console.log(`task added successfully (ID : ${result.insertId})`);
+  } catch (error) {
+    console.log(`Error adding task`, error.message);
+  }
 };

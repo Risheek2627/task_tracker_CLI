@@ -7,4 +7,4 @@ const pool = mysql.createPool({
   database: "task_tracer",
 });
 
-module.exports = pool;
+module.exports = pool.promise();
