@@ -3,7 +3,16 @@ const { spawn } = require("child_process");
 const path = require("path");
 const colors = require("colors");
 
-// Ensure colors are installed via: npm install colors
+// Import actual task controller
+const {
+  addTask,
+  updateTask,
+  deleteTask,
+  markInProgress,
+  markDone,
+  listTasks,
+} = require("./controllers/taskController");
+
 colors.enable();
 colors.setTheme({
   prompt: "blue",
@@ -53,29 +62,6 @@ if (!process.env.CLI_INSTANCE) {
   openNewTerminal();
 }
 
-// Simulated task controller (replace with your actual implementation)
-const taskController = {
-  addTask: (description) => {
-    console.log(`Task added: ${description}`.green);
-    return Math.floor(Math.random() * 1000);
-  },
-  updateTask: (id, description) => {
-    console.log(`Task ${id} updated: ${description}`.green);
-  },
-  deleteTask: (id) => {
-    console.log(`Task ${id} deleted`.green);
-  },
-  markInProgress: (id) => {
-    console.log(`Task ${id} marked in progress`.green);
-  },
-  markDone: (id) => {
-    console.log(`Task ${id} marked as done`.green);
-  },
-  listTasks: () => {
-    console.log("Listing tasks...".blue);
-  },
-};
-
 // Welcome and help messages
 const WELCOME_MESSAGE = `
 ${"╔══════════════════════════════════╗".yellow}
@@ -95,7 +81,9 @@ const HELP_COMMANDS = {
   "mark-in-progress":
     "Mark a task as in progress".magenta + ": mark-in-progress [task ID]",
   "mark-done": "Mark a task as completed".cyan + ": mark-done [task ID]",
-  list: "List tasks".blue + ": list [optional: status filter]",
+  list:
+    "List tasks".blue +
+    ": list [optional: status filter (todo/in-progress/done)]",
   "--help": "Show this help menu".white,
 };
 
@@ -116,56 +104,60 @@ const showHelp = () => {
 };
 
 // Command handler
-const handleCommand = (command, args) => {
+const handleCommand = async (command, args) => {
   if (command === "--help") {
     showHelp();
     return;
   }
 
-  switch (command) {
-    case "add":
-      if (args.length === 0) {
-        console.log("Please provide a task description".red);
-        return;
-      }
-      taskController.addTask(args.join(" "));
-      break;
-    case "update":
-      if (args.length < 2) {
-        console.log("Please provide ID and the new description".red);
-        return;
-      }
-      taskController.updateTask(args[0], args.slice(1).join(" "));
-      break;
-    case "delete":
-      if (args.length === 0) {
-        console.log("Please provide ID to delete the task".red);
-        return;
-      }
-      taskController.deleteTask(args[0]);
-      break;
-    case "mark-in-progress":
-      if (args.length === 0) {
-        console.log("Please provide ID to mark as progress".red);
-        return;
-      }
-      taskController.markInProgress(args[0]);
-      break;
-    case "mark-done":
-      if (args.length === 0) {
-        console.log("Please provide ID to mark as Done".red);
-        return;
-      }
-      taskController.markDone(args[0]);
-      break;
-    case "list":
-      taskController.listTasks(args[0] || null);
-      break;
-    default:
-      console.log(
-        "Invalid command. Type --help to see available commands.".yellow
-      );
-      break;
+  try {
+    switch (command) {
+      case "add":
+        if (args.length === 0) {
+          console.log("Please provide a task description".red);
+          return;
+        }
+        await addTask(args.join(" "));
+        break;
+      case "update":
+        if (args.length < 2) {
+          console.log("Please provide ID and the new description".red);
+          return;
+        }
+        await updateTask(args[0], args.slice(1).join(" "));
+        break;
+      case "delete":
+        if (args.length === 0) {
+          console.log("Please provide ID to delete the task".red);
+          return;
+        }
+        await deleteTask(args[0]);
+        break;
+      case "mark-in-progress":
+        if (args.length === 0) {
+          console.log("Please provide ID to mark as progress".red);
+          return;
+        }
+        await markInProgress(args[0]);
+        break;
+      case "mark-done":
+        if (args.length === 0) {
+          console.log("Please provide ID to mark as Done".red);
+          return;
+        }
+        await markDone(args[0]);
+        break;
+      case "list":
+        await listTasks(args[0] || null);
+        break;
+      default:
+        console.log(
+          "Invalid command. Type --help to see available commands.".yellow
+        );
+        break;
+    }
+  } catch (error) {
+    console.log(`Error executing command: ${error.message}`.red);
   }
 };
 

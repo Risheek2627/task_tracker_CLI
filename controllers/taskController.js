@@ -77,22 +77,27 @@ const markDone = async (id) => {
 
 const listTasks = async (status = null) => {
   try {
-    const query = "SELECT * FROM tasks";
+    let query = "SELECT * FROM tasks";
+    const params = [];
+
     if (status) {
-      query + "WHERE status=?";
+      query += " WHERE status = ?";
+      params.push(status);
     }
-    const [result] = await db.query(query, [status]);
-    if (result.affectedRows === 0) {
+
+    const [result] = await db.query(query, params);
+
+    if (result.length === 0) {
       console.log("No tasks found");
     } else {
       result.forEach((task) => {
         console.log(
-          `ID : ${task.id}, description : ${task.description} , status : ${task.status}`
+          `ID: ${task.id}, Description: ${task.description}, Status: ${task.status}`
         );
       });
     }
   } catch (error) {
-    console.log("Error listing the tasks", error.message);
+    console.log("Error listing the tasks:", error.message);
   }
 };
 
