@@ -4,7 +4,7 @@ Task Tracker CLI is a simple command-line interface application designed to help
 
 ---
 ## **project URL**
-[Visit Project Repository](https://github.com/yourusername/task-tracker-cli)
+[Visit Project Repository](https://github.com/Risheek2627/task_tracker_CLI)
 
 
 ## Table of Contents
