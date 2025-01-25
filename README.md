@@ -32,3 +32,22 @@ Task Tracker CLI is a simple command-line interface application designed to help
 
 ## Project Structure
 
+---
+
+## Technologies Used
+
+- **Node.js**: JavaScript runtime for executing code.
+- **MySQL**: Database for storing tasks and their statuses.
+- **Chalk**: For CLI text styling.
+- **Colors**: For adding colored outputs to CLI.
+- **Readline**: For handling interactive command-line inputs.
+
+---
+
+## Installation
+
+1. **Clone the Repository**:
+   ```bash
+   git clone <repository-url>
+   cd task_tracker
+
