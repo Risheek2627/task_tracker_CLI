@@ -3,8 +3,9 @@
 Task Tracker CLI is a simple command-line interface application designed to help users track, manage, and organize their tasks efficiently. It supports creating, updating, deleting, and categorizing tasks, providing a seamless way to manage your workload.
 
 ---
-# project URL
- https://github.com/Risheek2627/task_tracker_CLI.git
+## **project URL**
+[Visit Project Repository](https://github.com/yourusername/task-tracker-cli)
+
 
 ## Table of Contents
 
