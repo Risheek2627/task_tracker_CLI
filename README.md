@@ -70,6 +70,39 @@ Task Tracker CLI ├── cli.js # Main CLI application ├── taskControlle
 
     module.exports = pool.promise();
     
-4.**Run the Application** : 
-    ```bash
-     node cli.js
+
+# CLI Task Manager
+
+4.**Run the Application**
+
+```bash
+node cli.js
+```
+
+## **Usage**
+
+Start the CLI by running the command above and follow the on-screen instructions.
+
+## **Commands**
+
+| **Command** | **Description** | **Example** |
+|-------------|-----------------|-------------|
+| `add <description>` | Add a new task with the given description | `add "Buy groceries"` |
+| `update <id> <desc>` | Update an existing task description | `update 1 "Buy groceries and cook dinner"` |
+| `delete <id>` | Delete a task by its ID | `delete 1` |
+| `mark-in-progress <id>` | Mark a task as "In Progress" | `mark-in-progress 2` |
+| `mark-done <id>` | Mark a task as "Done" | `mark-done 3` |
+| `list` | List all tasks | `list` |
+| `list <status>` | List tasks filtered by their status | `list done` |
+
+## **Database Schema**
+
+The application uses a `tasks` table with the following schema:
+
+| **Column Name** | **Data Type** | **Description** |
+|----------------|---------------|-----------------|
+| `id` | INT (Primary Key) | Unique identifier for the task |
+| `description` | VARCHAR(255) | Description of the task |
+| `status` | ENUM | Task status: `todo`, `in-progress`, `done` |
+| `createdAt` | DATETIME | Timestamp of task creation |
+| `updatedAt` | DATETIME | Timestamp of last task update |
