@@ -12,10 +12,7 @@ Task Tracker CLI is a simple command-line interface application designed to help
 - [Installation](#installation)
 - [Usage](#usage)
 - [Commands](#commands)
-- [Database Schema](#database-schema)
-- [Error Handling](#error-handling)
-- [Future Improvements](#future-improvements)
-
+  
 ---
 
 ## Features
@@ -50,7 +47,7 @@ Task Tracker CLI ├── cli.js # Main CLI application ├── taskControlle
 
 1. **Clone the Repository**:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/Risheek2627/task_tracker_CLI.git
    cd task_tracker
 
 2. **Install Dependencies**:
