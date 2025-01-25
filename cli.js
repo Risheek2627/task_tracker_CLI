@@ -1,46 +1,121 @@
 const readline = require("readline");
-const { exec } = require("child_process");
+const { spawn } = require("child_process");
 const path = require("path");
-const {
-  addTask,
-  updateTask,
-  deleteTask,
-  markInProgress,
-  markDone,
-  listTasks,
-} = require("./controllers/taskController");
+const colors = require("colors");
 
+// Ensure colors are installed via: npm install colors
+colors.enable();
+colors.setTheme({
+  prompt: "blue",
+  info: "green",
+  warn: "yellow",
+  error: "red",
+});
+
+// Terminal opening function
+const openNewTerminal = () => {
+  const cliPath = path.join(__dirname, "cli.js");
+
+  switch (process.platform) {
+    case "win32":
+      spawn("cmd.exe", ["/c", "start", "cmd.exe", "/K", "node", cliPath], {
+        stdio: "ignore",
+        detached: true,
+      });
+      break;
+    case "darwin": // macOS
+      spawn(
+        "osascript",
+        ["-e", `tell application "Terminal" to do script "node ${cliPath}"`],
+        {
+          stdio: "ignore",
+          detached: true,
+        }
+      );
+      break;
+    case "linux":
+      spawn("x-terminal-emulator", ["-e", `node ${cliPath}`], {
+        stdio: "ignore",
+        detached: true,
+      });
+      break;
+    default:
+      console.log("Unsupported platform".red);
+      process.exit(1);
+  }
+
+  process.exit(0);
+};
+
+// Check if this is the first instance
+if (!process.env.CLI_INSTANCE) {
+  process.env.CLI_INSTANCE = "true";
+  openNewTerminal();
+}
+
+// Simulated task controller (replace with your actual implementation)
+const taskController = {
+  addTask: (description) => {
+    console.log(`Task added: ${description}`.green);
+    return Math.floor(Math.random() * 1000);
+  },
+  updateTask: (id, description) => {
+    console.log(`Task ${id} updated: ${description}`.green);
+  },
+  deleteTask: (id) => {
+    console.log(`Task ${id} deleted`.green);
+  },
+  markInProgress: (id) => {
+    console.log(`Task ${id} marked in progress`.green);
+  },
+  markDone: (id) => {
+    console.log(`Task ${id} marked as done`.green);
+  },
+  listTasks: () => {
+    console.log("Listing tasks...".blue);
+  },
+};
+
+// Welcome and help messages
+const WELCOME_MESSAGE = `
+${"╔══════════════════════════════════╗".yellow}
+${"║     ".yellow}${"Task Tracker CLI".green}${"      ║".yellow}
+${"╚══════════════════════════════════╝".yellow}
+
+${"Welcome!".yellow} ${"Type".grey} ${"--help".cyan} ${
+  "to see available commands.".grey
+}
+`;
+
+const HELP_COMMANDS = {
+  add: "Add a new task".green + ": add [task description]",
+  update:
+    "Update an existing task".yellow + ": update [task ID] [new description]",
+  delete: "Delete a task".red + ": delete [task ID]",
+  "mark-in-progress":
+    "Mark a task as in progress".magenta + ": mark-in-progress [task ID]",
+  "mark-done": "Mark a task as completed".cyan + ": mark-done [task ID]",
+  list: "List tasks".blue + ": list [optional: status filter]",
+  "--help": "Show this help menu".white,
+};
+
+// Create readline interface
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
-  prompt: "TaskTrackerCLI>>>",
+  prompt: "TaskTrackerCLI>>> ".white,
 });
 
-// Help commands dictionary
-const HELP_COMMANDS = {
-  add: "Add a new task: add [task description]",
-  update: "Update an existing task: update [task ID] [new description]",
-  delete: "Delete a task: delete [task ID]",
-  "mark-in-progress": "Mark a task as in progress: mark-in-progress [task ID]",
-  "mark-done": "Mark a task as completed: mark-done [task ID]",
-  list: "List tasks: list [optional: status filter]",
-  "--help": "Show this help menu",
-};
-
-// Welcome message
-const WELCOME_MESSAGE = `
-Welcome to Task Tracker CLI!
-Type --help to see available commands.
-`;
-
+// Show help function
 const showHelp = () => {
-  console.log("\nAvailable Commands:");
+  console.log("\nAvailable Commands:".underline.blue);
   Object.entries(HELP_COMMANDS).forEach(([cmd, desc]) => {
-    console.log(`  ${cmd.padEnd(15)} : ${desc}`);
+    console.log(`  ${cmd.green.padEnd(15)} : ${desc}`);
   });
   console.log("\n");
 };
 
+// Command handler
 const handleCommand = (command, args) => {
   if (command === "--help") {
     showHelp();
@@ -50,48 +125,51 @@ const handleCommand = (command, args) => {
   switch (command) {
     case "add":
       if (args.length === 0) {
-        console.log("Please provide a task description");
+        console.log("Please provide a task description".red);
         return;
       }
-      addTask(args.join(" "));
+      taskController.addTask(args.join(" "));
       break;
     case "update":
       if (args.length < 2) {
-        console.log("Please provide ID and the new description");
+        console.log("Please provide ID and the new description".red);
         return;
       }
-      updateTask(args[0], args.slice(1).join(" "));
+      taskController.updateTask(args[0], args.slice(1).join(" "));
       break;
     case "delete":
       if (args.length === 0) {
-        console.log("Please provide ID to delete the task");
+        console.log("Please provide ID to delete the task".red);
         return;
       }
-      deleteTask(args[0]);
+      taskController.deleteTask(args[0]);
       break;
     case "mark-in-progress":
       if (args.length === 0) {
-        console.log("Please provide ID to mark as progress");
+        console.log("Please provide ID to mark as progress".red);
         return;
       }
-      markInProgress(args[0]);
+      taskController.markInProgress(args[0]);
       break;
     case "mark-done":
       if (args.length === 0) {
-        console.log("Please provide ID to mark as Done");
+        console.log("Please provide ID to mark as Done".red);
         return;
       }
-      markDone(args[0]);
+      taskController.markDone(args[0]);
       break;
     case "list":
-      listTasks(args[0] || null);
+      taskController.listTasks(args[0] || null);
       break;
     default:
-      console.log("Invalid command. Type --help to see available commands.");
+      console.log(
+        "Invalid command. Type --help to see available commands.".yellow
+      );
       break;
   }
 };
 
+// Start interactive session
 const startInteractiveSession = () => {
   console.log(WELCOME_MESSAGE);
   rl.prompt();
@@ -101,47 +179,10 @@ const startInteractiveSession = () => {
     handleCommand(command, args);
     rl.prompt();
   }).on("close", () => {
-    console.log("Exiting Task Tracker CLI......");
+    console.log("Exiting Task Tracker CLI......".red);
     process.exit(0);
   });
 };
 
-const openNewTerminal = () => {
-  const isWindows = process.platform === "win32";
-  const cliPath = path.join(__dirname, "cli.js");
-
-  const terminalCommands = {
-    win32: `start cmd.exe /K "node ${cliPath}"`,
-    darwin: `osascript -e 'tell application "Terminal" to do script "node ${cliPath}"'`,
-    linux: `gnome-terminal -- bash -c "node ${cliPath}"`,
-  };
-
-  const command = terminalCommands[process.platform] || terminalCommands.linux;
-
-  exec(command, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Error opening terminal: ${error.message}`);
-      return;
-    }
-    if (stderr) {
-      console.error(`stderr: ${stderr}`);
-      return;
-    }
-  });
-};
-
-// Check if script is run directly
-if (require.main === module) {
-  // Check if this is the first instance
-  if (!process.env.CLI_INSTANCE) {
-    process.env.CLI_INSTANCE = "true";
-    openNewTerminal();
-  } else {
-    startInteractiveSession();
-  }
-} else {
-  module.exports = {
-    handleCommand,
-    startInteractiveSession,
-  };
-}
+// Start the session
+startInteractiveSession();
